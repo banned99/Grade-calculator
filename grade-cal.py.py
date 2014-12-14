@@ -21,12 +21,12 @@ class App:
         Label(master, text=" ").grid(row=0)
         Label(master, text=" ").grid(row=3)
         Label(text=" ", width=5).grid(row=1, column=3)
-        
+
         ##Label for text -> Number of subject
         text_sub = Label(master, text="Number of Subject :", width=20)
 
         ##Entry for num of subject
-        self.number = IntVar(value=1)
+        self.number = StringVar(value=1)
         num_sub = Entry(master, width=5, textvariable=self.number)
 
         ##Start Button
@@ -46,23 +46,23 @@ class App:
         Label(master, text="D+ :", width=5).grid(row=10, column=0, sticky=N)
         Label(master, text="D    :", width=5).grid(row=11, column=0, sticky=N)
         Label(text=" ", width=10).grid(row=13, column=0)
-            
+
         ##Entry for grade range
-        self.grade_a = DoubleVar(value=80.0)
+        self.grade_a = StringVar(value=80.0)
         ent_a = Entry(master, width=5, textvariable=self.grade_a)
-        self.grade_b_plu = DoubleVar(value=75.0)
+        self.grade_b_plu = StringVar(value=75.0)
         ent_b_plu = Entry(master, width=5, textvariable=self.grade_b_plu)
-        self.grade_b = DoubleVar(value=70.0)
+        self.grade_b = StringVar(value=70.0)
         ent_b = Entry(master, width=5, textvariable=self.grade_b)
-        self.grade_c_plu = DoubleVar(value=65.0)
+        self.grade_c_plu = StringVar(value=65.0)
         ent_c_plu = Entry(master, width=5, textvariable=self.grade_c_plu)
-        self.grade_c = DoubleVar(value=60.0)
+        self.grade_c = StringVar(value=60.0)
         ent_c = Entry(master, width=5, textvariable=self.grade_c)
-        self.grade_d_plu = DoubleVar(value=55.0)
+        self.grade_d_plu = StringVar(value=55.0)
         ent_d_plu = Entry(master, width=5, textvariable=self.grade_d_plu)
-        self.grade_d = DoubleVar(value=50.0)
+        self.grade_d = StringVar(value=50.0)
         ent_d = Entry(master, width=5, textvariable=self.grade_d)
-        
+
         ##Window arrangement section
         text_sub.grid(row=1, column=0, sticky=E)
         num_sub.grid(row=1, column=1, padx=5, pady=5)
@@ -75,7 +75,7 @@ class App:
         ent_c.grid(row=9, column=1, padx=5, pady=5)
         ent_d_plu.grid(row=10, column=1, padx=5, pady=5)
         ent_d.grid(row=11, column=1, padx=5, pady=5)
-            
+
         ##Data for other methods
         self.weight = []
         self.subject = []
@@ -90,16 +90,21 @@ class App:
         ==== Second section of programme ====
         -- Appear after pressed the start button
         Create the input slot of subject
-        """   
+        """
         ##Get data section: number of subject from __init__
-        self.num_of_sub = self.number.get()
-
         try:
-            temp = [self.grade_a, self.grade_b_plu, self.grade_b,
-                    self.grade_c_plu, self.grade_c, self.grade_d_plu,
-                    self.grade_d]
-            for i in temp:
-                tester = i.get()
+            self.num_of_sub = int(self.number.get())
+            if self.num_of_sub < 1 or self.num_of_sub > 20:
+                tkMessageBox.showerror(title='Value error',
+                                       message='Value must be 1 - 20')
+                return None
+            float(self.grade_a.get())
+            float(self.grade_b_plu.get())
+            float(self.grade_b.get())
+            float(self.grade_c_plu.get())
+            float(self.grade_c.get())
+            float(self.grade_d_plu.get())
+            float(self.grade_d.get())
 
             ##Create data for creating subject weight and score entry slots
             for i in xrange(self.num_of_sub):
@@ -116,31 +121,31 @@ class App:
 
             if self.subject == []:
                 pass
-            else:        
+            else:
                 ##Text label section
                 self.txt_weight = Label(text="Weight :", width=10)
                 self.txt_score = Label(text="Score :", width=10)
                 self.txt_weight.grid(row=1, column=4)
                 self.txt_score.grid(row=1, column=5)
-                
+
                 ##Create subject weight and subject score entry slots
                 for j in xrange(len(self.weight)):
                     self.txt[j] = Label(text=(self.subject[j]+' :'), width=15)
-                    self.weight[j] = DoubleVar(value=1.0)
-                    self.subject[j] = IntVar()
-                    
+                    self.weight[j] = StringVar(value=1.0)
+                    self.subject[j] = StringVar(value=0)
+
                     self.entry_weight[j] = Entry(
                         width=5, textvariable=self.weight[j])
-                    
+
                     self.entry_subject[j] = Entry(
                         width=5, textvariable=self.subject[j])
 
                     ##All text and entry arrangement section
                     self.txt[j].grid(row=j+2, column=3, sticky=E)
-                    
+
                     self.entry_weight[j].grid(
                         row=j+2, column=4, padx=5, pady=5)
-                    
+
                     self.entry_subject[j].grid(
                         row=j+2, column=5, padx=5, pady=5)
 
@@ -149,101 +154,120 @@ class App:
                 self.space_af = Label(text=" ")
                 self.space_be.grid(row=(self.num_of_sub+2), column=4)
                 self.space_af.grid(row=(self.num_of_sub+4), column=4)
-                
+
                 ##Button calcualate
                 self.cal = Button(text="Calculate", command=self.calculate)
                 self.cal.grid(row=(self.num_of_sub+3), column=4)
 
                 ##Reset button
                 self.reset_result = Button(text="Reset",
-                                           command=self.re_result, 
+                                           command=self.re_result,
                                            state='disabled')
                 self.reset_result.grid(row=(self.num_of_sub+3), column=5)
 
                 ##Enable the restart button
                 self.restart.config(state='active')
-                
+
                 ##Disable the start button
                 self.starter.config(state='disabled')
         except:
             tkMessageBox.showerror(title='Value Error',
                                    message='Value must be number')
-        
+
     def calculate(self):
         """
         ==== Third section of programme ====
         -- Appear after pressed the calculate button
         Takes all data form second section, calculate, and show outputs
         """
-        ##Text each subject result
-        self.txt_result = Label(text="Result :", width=10)
-        self.txt_grade = Label(text="Grade :", width=10)
-        self.txt_aver = Label(text="Grade Average :", width=11)
-        
-        ##Get all the data for calculate and show
-        weight_var = []
-        grade_var = []
-        grade_data = {'A': 4.0, 'B+': 3.5, 'B': 3.0, 'C+': 2.5,
-                      'C': 2.0, 'D+': 1.5, 'D': 1.0, 'F': 0.0}
-        result = []
+        try:
+            temp = 0
+            for i in xrange(len(self.weight)):
+                temp += float(self.weight[i].get())
+                int(self.subject[i].get())
 
-        for i in xrange(len(self.weight)):
-            self.grade_print.append('Result'+str(i+1))
-            self.var_print.append('Grade'+str(i+1))
-            weight_var.append(self.weight[i].get())
+            if temp <= 0:
+                raise ValueError
             
-            if self.subject[i].get() >= self.grade_a.get():
-                grade_var.append('A')
-            elif self.subject[i].get() >= self.grade_b_plu.get():
-                grade_var.append('B+')
-            elif self.subject[i].get() >= self.grade_b.get():
-                grade_var.append('B')
-            elif self.subject[i].get() >= self.grade_c_plu.get():
-                grade_var.append('C+')
-            elif self.subject[i].get() >= self.grade_c.get():
-                grade_var.append('C')
-            elif self.subject[i].get() >= self.grade_d_plu.get():
-                grade_var.append('D+')
-            elif self.subject[i].get() >= self.grade_d.get():
-                grade_var.append('D')
+            ##Text each subject result
+            self.txt_result = Label(text="Result :", width=10)
+            self.txt_grade = Label(text="Grade :", width=10)
+            self.txt_aver = Label(text="Grade Average :", width=11)
+
+            ##Get all the data for calculate and show
+            weight_var = []
+            grade_var = []
+            grade_data = {'A': 4.0, 'B+': 3.5, 'B': 3.0, 'C+': 2.5,
+                          'C': 2.0, 'D+': 1.5, 'D': 1.0, 'F': 0.0}
+            result = []
+
+            for i in xrange(len(self.weight)):
+                self.grade_print.append('Result'+str(i+1))
+                self.var_print.append('Grade'+str(i+1))
+                weight_var.append(float(self.weight[i].get()))
+
+                if int(self.subject[i].get()) >= float(self.grade_a.get()):
+                    grade_var.append('A')
+                elif int(self.subject[i].get()) >= \
+                float(self.grade_b_plu.get()):
+                    grade_var.append('B+')
+                elif int(self.subject[i].get()) >= float(self.grade_b.get()):
+                    grade_var.append('B')
+                elif int(self.subject[i].get()) >= \
+                float(self.grade_c_plu.get()):
+                    grade_var.append('C+')
+                elif int(self.subject[i].get()) >= float(self.grade_c.get()):
+                    grade_var.append('C')
+                elif int(self.subject[i].get()) >= \
+                float(self.grade_d_plu.get()):
+                    grade_var.append('D+')
+                elif int(self.subject[i].get()) >= float(self.grade_d.get()):
+                    grade_var.append('D')
+                else:
+                    grade_var.append('F')
+
+            ##Text arrange section
+            self.txt_result.grid(row=1, column=6)
+            self.txt_grade.grid(row=1, column=7)
+
+            ##Calculate and show result section
+            for j in xrange(len(grade_var)):
+                result.append(grade_data[grade_var[j]] * weight_var[j])
+
+                ##Show result section
+                grade_sub = StringVar(value=grade_var[j])
+                self.grade_print[j] = Entry(width=5, textvariable=grade_sub,
+                                            state='disabled')
+                var_sub = StringVar(value=grade_data[grade_var[j]])
+                self.var_print[j] = Entry(width=5, textvariable=var_sub,
+                                          state='disabled')
+
+                ##Show result arrange section
+                self.grade_print[j].grid(row=j+2, column=6, padx=5, pady=5)
+                self.var_print[j].grid(row=j+2, column=7, padx=5, pady=5)
+
+            ##Show grade average
+            aver = sum(result) / sum(weight_var)
+            grade_average = StringVar(value='%.2f' % aver)
+            self.grade_aver = Entry(width=5, textvariable=grade_average,
+                                    state='disabled')
+
+            ##Show grade average arrangement
+            self.txt_aver.grid(row=len(grade_var)+3, column=6)
+            self.grade_aver.grid(row=len(grade_var)+3, column=7)
+
+            ##Disable the calculate button
+            self.cal.config(state='disabled')
+
+            ##Enable the reset button
+            self.reset_result.config(state='active')
+        except:
+            if temp <= 0:
+                tkMessageBox.showerror(title='Value Error',
+                                       message='Weight must higher than 0')
             else:
-                grade_var.append('F')
-
-        ##Text arrange section
-        self.txt_result.grid(row=1, column=6)
-        self.txt_grade.grid(row=1, column=7)
-
-        ##Calculate and show result section
-        for j in xrange(len(grade_var)):
-            result.append(grade_data[grade_var[j]] * weight_var[j])
-
-            ##Show result section
-            grade_sub = StringVar(value=grade_var[j])
-            self.grade_print[j] = Entry(width=5, textvariable=grade_sub,
-                                        state='disabled')
-            var_sub = DoubleVar(value=grade_data[grade_var[j]])
-            self.var_print[j] = Entry(width=5, textvariable=var_sub,
-                                      state='disabled')
-
-            ##Show result arrange section
-            self.grade_print[j].grid(row=j+2, column=6, padx=5, pady=5)
-            self.var_print[j].grid(row=j+2, column=7, padx=5, pady=5)
-
-        ##Show grade average
-        aver = sum(result) / sum(weight_var)
-        grade_average = StringVar(value='%.2f' % aver)
-        self.grade_aver = Entry(width=5, textvariable=grade_average,
-                                state='disabled')
-
-        ##Show grade average arrangement
-        self.txt_aver.grid(row=len(grade_var)+3, column=6)
-        self.grade_aver.grid(row=len(grade_var)+3, column=7)
-
-        ##Disable the calculate button
-        self.cal.config(state='disabled')
-
-        ##Enable the reset button
-        self.reset_result.config(state='active')
+                tkMessageBox.showerror(title='Value Error',
+                                       message='Value must be number')
 
     def reset(self):
         """
@@ -334,14 +358,14 @@ class App:
 
         ##Disable reset button
         self.reset_result.config(state='disabled')
-        
+
         ##Re-enable the calculate button
         self.cal.config(state='active')
 
         ##Reset third section
         self.grade_print = []
         self.var_print = []
-        
+
 root = Tk()
 app = App(root)
 root.title('Grade Calculator')
